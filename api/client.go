@@ -4,18 +4,18 @@ import (
 	"log"
 	"os"
 
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
-	api "github.com/olegsmetanin/golang-grpc-rest-gorm-example/api/proto"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/grpclog"
-	"github.com/olegsmetanin/golang-grpc-rest-gorm-example/api/cert"
 	"crypto/x509"
 	"fmt"
+	"github.com/olegsmetanin/golang-grpc/api/cert"
+	api "github.com/olegsmetanin/golang-grpc/api/proto"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/grpclog"
 )
 
 const (
-	port = 10000
+	port        = 10000
 	defaultName = "world"
 )
 
@@ -24,7 +24,6 @@ func main() {
 
 	var err error
 
-
 	demoCertPool := x509.NewCertPool()
 	ok := demoCertPool.AppendCertsFromPEM([]byte(cert.Cert))
 	if !ok {
@@ -32,9 +31,7 @@ func main() {
 	}
 	demoAddr := fmt.Sprintf("localhost:%d", port)
 
-
 	var opts []grpc.DialOption
-
 
 	creds := credentials.NewClientTLSFromCert(demoCertPool, demoAddr)
 	opts = append(opts, grpc.WithTransportCredentials(creds))
@@ -43,7 +40,6 @@ func main() {
 		grpclog.Fatalf("fail to dial: %v", err)
 	}
 	defer conn.Close()
-
 
 	c := api.NewGreeterClient(conn)
 

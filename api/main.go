@@ -5,20 +5,20 @@ import (
 	//"net"
 	//"net/http"
 	//"strings"
-	"github.com/gengo/grpc-gateway/runtime"
 	"fmt"
+	"github.com/gengo/grpc-gateway/runtime"
 
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
-	api "github.com/olegsmetanin/golang-grpc-rest-gorm-example/api/proto"
-	"github.com/olegsmetanin/golang-grpc-rest-gorm-example/api/cert"
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/olegsmetanin/golang-grpc/api/cert"
+	api "github.com/olegsmetanin/golang-grpc/api/proto"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"log"
+	"net"
 	"net/http"
 	"strings"
-	"net"
-	"log"
 )
 
 const (
@@ -43,12 +43,14 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 //
 //// server is used to implement helloworld.GreeterServer.
 type grpcService struct{}
+
 //
 //// SayHello implements helloworld.GreeterServer
 func (s *grpcService) SayHello(ctx context.Context, in *api.HelloRequest) (*api.HelloReply, error) {
 	log.Print(in.Name)
 	return &api.HelloReply{Message: "Hello " + in.Name}, nil
 }
+
 //
 func newServer() *grpcService {
 	return new(grpcService)
@@ -70,8 +72,6 @@ func main() {
 		panic("bad certs")
 	}
 	demoAddr := fmt.Sprintf("localhost:%d", port)
-
-
 
 	opts := []grpc.ServerOption{
 		grpc.Creds(credentials.NewClientTLSFromCert(demoCertPool, demoAddr))}
@@ -115,6 +115,5 @@ func main() {
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
-
 
 }
